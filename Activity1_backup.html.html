@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MWANGALA LINDUNDA — Web Technologies Student</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <header>
+    <h1>Mwangala Lindunda</h1>
+    <p>Bachelor Of Science in Computer Science · ICT251 Web Technologies</p>
+  </header>
+
+  <nav>
+    <a href="#about">About Me</a>
+    <a href="#hobbies">My Hobbies</a>
+    <a href="#plan">Learning Plan</a>
+    <a href="#photos">My Photos</a>
+    <a href="#media">My Media</a>
+    <a href="#contact">Contact</a>
+    <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development" target="_blank" rel="noopener">MDN: Learn Web Development</a>
+  </nav>
+
+  <main>
+
+    <section id="about" class="content-section">
+      <h2>About Me</h2>
+      <p>
+  I'm a 19-year-old second-year Computer Science student at Mulungushi University,
+  currently working through the 2026 academic year. I grew up in Senanga District,
+  in Zambia's Western Province, where I learned early on that hard work and
+  consistency create opportunity — a lesson I owe largely to watching my parents
+  build what they have from the ground up. That same drive is what pushes me in
+  my studies today. My ambition is to build a genuine career in web design and
+  programming — not just to understand how the web works, but to be able to
+  design and build things people actually use. This website is one of my first
+  real steps in that direction.
+</p>
+    </section>
+
+    <section id="hobbies" class="content-section">
+      <h2>My Hobbies</h2>
+      <ul>
+        <li>Listening To Music</li>
+        <li>Adventuring</li>
+        <li>Learning New skills</li>
+      </ul>
+    </section>
+
+    <section id="plan" class="content-section">
+      <h2>My Learning Plan</h2>
+      <ol>
+        <li>[Realistic step 1 — Continue Learning the Fundementals of web design</li>
+        <li>[Realistic step 2 — Continue Building my personal information web site</li>
+        <li>[Realistic step 3 — learn basic JavaScript form validation and include it on my website</li>
+      </ol>
+
+      <table>
+        <caption>Weekly Web Learning Plan</caption>
+        <thead>
+          <tr><th>Day</th><th>Topic</th><th>Practice Task</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Monday</td><td>JavaFX</td><td>Try to implement what I have learnt to my java fx app</td></tr>
+          <tr><td>Wednesday</td><td>Statistics</td><td>Try to Solve some practical questions</td></tr>
+          <tr><td>Thursday</td><td>Web design</td><td>implement information learnt by appltng to the my website</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="photos" class="content-section">
+      <h2>My Photos</h2>
+      <div class="gallery">
+        <figure>
+          <img src="images/photo1.jpg" alt="Just me in my second year on a normal Sunday">
+          <figcaption>Black and white profile</figcaption>
+        </figure>
+        <figure>
+          <img src="images/photo2.jpg" alt="Me Imaginig how I'll apply the knowledge I have learnt">
+          <figcaption>It's Nice to learn new Stuff</figcaption>
+        </figure>
+        <figure>
+          <img src="images/photo3.jpg" alt="I have a lot of resons to always keep my smile">
+          <figcaption>Having a nice day and feeling blessed</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="media" class="content-section">
+      <h2>My Media</h2>
+
+      <h3>Introduction Video</h3>
+      <video controls src="videos/intro.mp4">
+        Your browser does not support the video tag.
+      </video>
+      <p>
+        Transcript: [Write what you actually say — your name, programme,
+        and one web skill you hope to learn. This keeps the intro accessible
+        without sound.]
+      </p>
+
+      <h3>Audio Clip</h3>
+      <audio controls src="videos/voice.mp3">
+        Your browser does not support the audio element.
+      </audio>
+      <p>This was just a song for trying the audio</p>
+    </section>
+
+    <section id="contact" class="content-section">
+      <h2>Contact</h2>
+      <p><em>This form is a browser demonstration only.</em></p>
+      <form action="#">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="topic">Topic</label>
+        <select id="topic" name="topic">
+          <option value="general">General enquiry</option>
+          <option value="feedback">Feedback</option>
+          <option value="collaboration">Collaboration</option>
+        </select>
+
+        <label for="message">Message</label>
+        <textarea id="message" name="message" required></textarea>
+
+        <button type="submit">Send message</button>
+      </form>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Lee(08). Built for ICT251 Web Technologies, Mulungushi University.</p>
+  </footer>
+
+</body>
+</html>

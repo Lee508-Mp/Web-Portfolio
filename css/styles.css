@@ -1,0 +1,180 @@
+/* =========================================================
+   THEME: "Drafting Paper" v2 — now with a fixed left sidebar.
+   Modern via structure + motion (fixed nav, hover transitions,
+   tighter type scale) rather than gradients/glass/shadows.
+   ========================================================= */
+
+:root {
+/* Emerald Ledger */
+/* Cobalt Bright */
+/* Berry Punch */
+--paper: #FBF0F1; --surface: #FFFFFF; --ink: #5C1A2B; --line: #C98A96; --accent: #9ACD32;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: 'Segoe UI', Verdana, sans-serif;
+  line-height: 1.7;
+}
+
+h1, h2, h3 {
+  font-family: 'Consolas', 'Courier New', monospace;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+/* ===== SIDEBAR NAVIGATION =====
+   Fixed to the left on desktop, so it stays visible while the
+   content column scrolls. Becomes a horizontal bar on narrow
+   screens — see the media query at the bottom. */
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: #2E3A46;   /* the bar's background */
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+nav a {
+  color: #EFEAE3;              /* the link text */
+  text-decoration: none;
+}
+
+.nav-brand {
+  font-family: 'Consolas', monospace;
+  color: var(--accent);
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  margin-bottom: 2rem;
+}
+
+nav a {
+  display: block;
+  color: var(--paper);
+  text-decoration: none;
+  padding: 0.6rem 0.5rem;
+  margin-bottom: 0.25rem;
+  border-left: 3px solid transparent;
+  transition: border-color 0.2s ease, background-color 0.2s ease, padding-left 0.2s ease;
+}
+
+nav a:hover, nav a:focus {
+  border-left-color: var(--accent);
+  background-color: rgba(198, 138, 29, 0.15);
+  padding-left: 0.85rem;
+}
+
+/* ===== CONTENT COLUMN =====
+   Shifted right by the sidebar's width. */
+.page-content {
+  margin-left: var(--sidebar-width);
+  max-width: 760px;
+  padding: 2rem 2.5rem 4rem;
+}
+
+header {
+  position: relative;
+  padding: 1.5rem 2rem;
+  border: 2px solid var(--ink);
+  background-color: var(--surface);
+  margin-bottom: 2rem;
+}
+header::before, header::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--accent);
+}
+header::before { top: -6px; left: -6px; border-right: none; border-bottom: none; }
+header::after  { bottom: -6px; right: -6px; border-left: none; border-top: none; }
+header h1 { margin: 0; font-size: 1.7rem; }
+header p  { margin: 0.4rem 0 0; color: var(--line); }
+
+.content-section {
+  background-color: var(--surface);
+  border-left: 4px solid var(--line);
+  padding: 1.5rem 1.75rem;
+  margin: 2.5rem 0;
+  transition: border-color 0.2s ease;
+}
+.content-section:hover { border-left-color: var(--accent); }
+.content-section h2 { margin-top: 0; }
+
+#hobbies { border-left-color: var(--accent); }
+
+table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.95rem; }
+caption { text-align: left; font-weight: bold; margin-bottom: 0.5rem; }
+th, td { border: 1px solid var(--line); padding: 0.55rem 0.75rem; text-align: left; }
+th { background-color: var(--ink); color: var(--paper); font-family: 'Consolas', monospace; }
+
+.gallery { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
+.gallery figure { flex: 1 1 150px; margin: 0; }
+.gallery img { width: 100%; height: auto; display: block; border: 1px solid var(--line); }
+.gallery figcaption { font-size: 0.85rem; color: var(--line); margin-top: 0.3rem; }
+
+img, video { max-width: 100%; height: auto; }
+audio { width: 100%; margin-top: 0.5rem; }
+
+form label { display: block; margin-top: 1rem; font-weight: bold; }
+form input, form select, form textarea {
+  width: 100%;
+  padding: 0.55rem;
+  margin-top: 0.3rem;
+  border: 1px solid var(--line);
+  background-color: #fff;
+  font-family: inherit;
+}
+form textarea { min-height: 100px; }
+
+button[type="submit"] {
+  margin-top: 1.2rem;
+  background-color: var(--accent);
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.4rem;
+  font-family: 'Consolas', monospace;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+button[type="submit"]:hover,
+button[type="submit"]:focus {
+  background-color: var(--line);
+}
+
+footer {
+  text-align: center;
+  padding: 1.5rem;
+  border-top: 2px solid var(--ink);
+  font-size: 0.85rem;
+  color: var(--line);
+}
+
+/* ===== MOBILE: sidebar becomes a top bar, no horizontal scroll ===== */
+@media (max-width: 720px) {
+  nav {
+    position: static;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    border-right: none;
+    border-bottom: 3px solid var(--accent);
+  }
+  .nav-brand { width: 100%; margin-bottom: 0.5rem; }
+  nav a { border-left: none; border-bottom: 3px solid transparent; padding: 0.4rem 0.6rem; }
+  nav a:hover, nav a:focus { border-left: none; border-bottom-color: var(--accent); padding-left: 0.6rem; }
+  .page-content { margin-left: 0; padding: 1.5rem 1rem 3rem; }
+}
+@media (max-width: 480px) {
+  .gallery figure { flex: 1 1 100%; }
+}
