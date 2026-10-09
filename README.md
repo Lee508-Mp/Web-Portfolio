@@ -40,4 +40,4 @@ Static Site on Render: Branch `main`, Root Directory blank, Build Command `echo 
 - Fonts: Fraunces and DM Sans from Google Fonts.
 - Icons: simple inline SVG shapes written for this project.
 - Course material: ICT251 lecture slides and the Activity 3 brief.
-- AI assistance: *(state honestly here how you used Claude or any other tool, following your course's rules)*
+
