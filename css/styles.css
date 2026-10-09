@@ -1,180 +1,559 @@
-/* =========================================================
-   THEME: "Drafting Paper" v2 — now with a fixed left sidebar.
-   Modern via structure + motion (fixed nav, hover transitions,
-   tighter type scale) rather than gradients/glass/shadows.
-   ========================================================= */
+/* ==========================================================
+   ICT251 Activity 3 | Rust & Slate portfolio
+   Sections: 1 Tokens  2 Base  3 Layout  4 Components
+             5 Navigation  6 Form  7 Footer  8 Wide screens
+   ========================================================== */
 
+/* ---------- 1. Design tokens (CSS variables) ----------
+   Every colour lives here. The dark theme only re-declares
+   the variables, so the JavaScript theme switch needs to do
+   one thing: set data-theme="dark" on <html>. */
 :root {
-/* Emerald Ledger */
-/* Cobalt Bright */
-/* Berry Punch */
---paper: #FBF0F1; --surface: #FFFFFF; --ink: #5C1A2B; --line: #C98A96; --accent: #9ACD32;
+  --ink: #2E3A46;          /* slate */
+  --paper: #EFEAE3;        /* warm paper */
+  --accent: #C1440E;       /* rust */
+
+  --bg: var(--paper);
+  --surface: #F8F5F0;
+  --text: var(--ink);
+  --muted: #52606D;
+  --line: #D6CEC3;
+  --field-border: #68757F;
+  --link: #A33A0B;          /* darker rust: 5.9:1 on paper, passes AA for text */
+  --focus: #A33A0B;
+  --error: #B3261E;
+
+  --btn-bg: var(--accent);
+  --btn-text: #FFFFFF;
+  --btn-hover: #9E3509;
+
+  --hero-bg: #2E3A46;
+  --hero-text: #EFEAE3;
+  --nav-bg: rgba(46, 58, 70, 0.94);
+  --nav-text: #EFEAE3;
+  --nav-focus: #F6B08F;
+  --footer-bg: #2E3A46;
+  --footer-link: #F6B08F;
+
+  --rail: 72px;             /* collapsed icon rail width */
+  --rail-open: 240px;       /* expanded rail width */
+  --radius: 6px;
+
+  --font-head: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
-* { box-sizing: border-box; }
+:root[data-theme="dark"] {
+  --bg: #1A222A;
+  --surface: #232D37;
+  --text: #EFEAE3;
+  --muted: #B4BDC6;
+  --line: #34414D;
+  --field-border: #8A97A3;
+  --link: #F0946B;
+  --focus: #F0946B;
+  --error: #FF8A80;
+
+  --btn-bg: #E8794A;
+  --btn-text: #1A222A;
+  --btn-hover: #F0946B;
+
+  --hero-bg: #0F151B;
+  --nav-bg: rgba(10, 14, 18, 0.94);
+  --footer-bg: #0F151B;
+}
+
+/* ---------- 2. Base (element selectors) ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
 
 body {
   margin: 0;
-  background-color: var(--paper);
-  color: var(--ink);
-  font-family: 'Segoe UI', Verdana, sans-serif;
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
   line-height: 1.7;
+  color: var(--text);
+  background: var(--bg);
+  overflow-wrap: break-word;
 }
 
 h1, h2, h3 {
-  font-family: 'Consolas', 'Courier New', monospace;
-  letter-spacing: 0.02em;
-  color: var(--ink);
+  font-family: var(--font-head);
+  line-height: 1.15;
+  margin: 0 0 0.6em;
 }
 
-/* ===== SIDEBAR NAVIGATION =====
-   Fixed to the left on desktop, so it stays visible while the
-   content column scrolls. Becomes a horizontal bar on narrow
-   screens — see the media query at the bottom. */
-nav {
+h1 { font-size: clamp(3rem, 11vw, 6.5rem); letter-spacing: -0.02em; font-weight: 700; }
+h2 { font-size: clamp(1.9rem, 4.5vw, 2.6rem); font-weight: 700; }
+h3 { font-size: 1.3rem; font-weight: 600; }
+
+p { margin: 0 0 1em; }
+
+a {
+  color: var(--link);
+  text-underline-offset: 0.2em;
+}
+a:hover { text-decoration-thickness: 3px; }
+
+/* Flexible media: never wider than the screen */
+img, video { display: block; max-width: 100%; height: auto; }
+audio { display: block; width: 100%; }
+
+/* Visible keyboard focus everywhere */
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+[hidden] { display: none !important; }
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 100;
+  padding: 0.6rem 1rem;
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  font-weight: 700;
+}
+.skip-link:focus { top: 1rem; }
+
+main:focus { outline: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; }
+}
+
+/* ---------- 3. Layout ----------
+   Each section is full-width (so its background and border span the
+   screen), but its padding keeps the text in a centred 62rem column. */
+main section {
+  padding-block: clamp(2.5rem, 7vw, 5rem);
+  padding-inline: max(clamp(1rem, 5vw, 3rem), calc((100% - 62rem) / 2));
+  border-top: 1px solid var(--line);
+}
+
+main section > h2::before {
+  content: "";
+  display: block;
+  width: 3rem;
+  height: 4px;
+  margin-bottom: 0.8rem;
+  background: var(--accent);
+}
+
+/* Id selector: the introduction gets its own slate block */
+#home {
+  padding-block: clamp(4rem, 18vh, 9rem);
+  border-top: 0;
+  background: var(--hero-bg);
+  color: var(--hero-text);
+}
+#home h1 { margin-bottom: 0.2em; }
+#home .hero__programme {
+  font-size: 1.25rem;
+  color: #D8D2C8;
+  margin-bottom: 1.5rem;
+}
+#home .hero__intro {
+  max-width: 38rem;
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+/* ---------- 4. Components ---------- */
+
+/* Buttons (class selector). 44px minimum height for easy tapping. */
+.btn {
+  display: inline-block;
+  min-height: 44px;
+  padding: 0.7rem 1.4rem;
+  border: 2px solid var(--btn-bg);
+  border-radius: var(--radius);
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  font: inherit;
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+.btn:hover {
+  background: var(--btn-hover);
+  border-color: var(--btn-hover);
+}
+.btn--ghost {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--text);
+}
+.btn--ghost:hover {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.hero__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: center;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  background-color: #2E3A46;   /* the bar's background */
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  gap: 0.75rem;
+}
+/* Buttons on the slate block use a lighter rust so they stand out */
+#home .btn { background: #E8794A; border-color: #E8794A; color: #1A222A; }
+#home .btn:hover { background: #F0946B; border-color: #F0946B; }
+#home .btn--ghost { background: transparent; border-color: #EFEAE3; color: #EFEAE3; }
+#home .btn--ghost:hover { background: #EFEAE3; color: #1A222A; }
+#home :focus-visible { outline-color: #F6B08F; }
+
+/* Hobbies: a plain ruled list rather than boxes */
+.hobby-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+}
+.hobby-list li {
+  padding: 1rem 0 0.5rem;
+  border-top: 2px solid var(--text);
 }
 
-nav a {
-  color: #EFEAE3;              /* the link text */
-  text-decoration: none;
+/* Projects: consistent panels with a rust edge (box model: padding, border, margin) */
+.project-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
 }
-
-.nav-brand {
-  font-family: 'Consolas', monospace;
-  color: var(--accent);
-  font-size: 0.95rem;
-  letter-spacing: 0.08em;
-  margin-bottom: 2rem;
-}
-
-nav a {
-  display: block;
-  color: var(--paper);
-  text-decoration: none;
-  padding: 0.6rem 0.5rem;
-  margin-bottom: 0.25rem;
-  border-left: 3px solid transparent;
-  transition: border-color 0.2s ease, background-color 0.2s ease, padding-left 0.2s ease;
-}
-
-nav a:hover, nav a:focus {
-  border-left-color: var(--accent);
-  background-color: rgba(198, 138, 29, 0.15);
-  padding-left: 0.85rem;
-}
-
-/* ===== CONTENT COLUMN =====
-   Shifted right by the sidebar's width. */
-.page-content {
-  margin-left: var(--sidebar-width);
-  max-width: 760px;
-  padding: 2rem 2.5rem 4rem;
-}
-
-header {
-  position: relative;
-  padding: 1.5rem 2rem;
-  border: 2px solid var(--ink);
-  background-color: var(--surface);
-  margin-bottom: 2rem;
-}
-header::before, header::after {
-  content: "";
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  border: 2px solid var(--accent);
-}
-header::before { top: -6px; left: -6px; border-right: none; border-bottom: none; }
-header::after  { bottom: -6px; right: -6px; border-left: none; border-top: none; }
-header h1 { margin: 0; font-size: 1.7rem; }
-header p  { margin: 0.4rem 0 0; color: var(--line); }
-
-.content-section {
-  background-color: var(--surface);
-  border-left: 4px solid var(--line);
-  padding: 1.5rem 1.75rem;
-  margin: 2.5rem 0;
-  transition: border-color 0.2s ease;
-}
-.content-section:hover { border-left-color: var(--accent); }
-.content-section h2 { margin-top: 0; }
-
-#hobbies { border-left-color: var(--accent); }
-
-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.95rem; }
-caption { text-align: left; font-weight: bold; margin-bottom: 0.5rem; }
-th, td { border: 1px solid var(--line); padding: 0.55rem 0.75rem; text-align: left; }
-th { background-color: var(--ink); color: var(--paper); font-family: 'Consolas', monospace; }
-
-.gallery { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
-.gallery figure { flex: 1 1 150px; margin: 0; }
-.gallery img { width: 100%; height: auto; display: block; border: 1px solid var(--line); }
-.gallery figcaption { font-size: 0.85rem; color: var(--line); margin-top: 0.3rem; }
-
-img, video { max-width: 100%; height: auto; }
-audio { width: 100%; margin-top: 0.5rem; }
-
-form label { display: block; margin-top: 1rem; font-weight: bold; }
-form input, form select, form textarea {
-  width: 100%;
-  padding: 0.55rem;
-  margin-top: 0.3rem;
+.project {
+  padding: 1.25rem 1.4rem;
   border: 1px solid var(--line);
-  background-color: #fff;
-  font-family: inherit;
+  border-left: 6px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--surface);
 }
-form textarea { min-height: 100px; }
+.project p:last-child { margin-bottom: 0; }
+.project__tags {
+  font-size: 0.95rem;
+  color: var(--muted);
+}
 
-button[type="submit"] {
-  margin-top: 1.2rem;
-  background-color: var(--accent);
-  color: #fff;
-  border: none;
-  padding: 0.6rem 1.4rem;
-  font-family: 'Consolas', monospace;
+/* Learning plan */
+.steps { padding-left: 1.4rem; margin: 0 0 2rem; max-width: 40rem; }
+.steps li { margin-bottom: 0.6rem; padding-left: 0.3rem; }
+.steps li::marker { color: var(--link); font-weight: 700; }
+
+.table-wrap {
+  overflow-x: auto;           /* if a table is ever too wide, only this box scrolls */
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+table { width: 100%; border-collapse: collapse; }
+caption {
+  padding: 0.8rem 1rem;
+  text-align: left;
+  font-weight: 700;
+}
+th, td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-top: 1px solid var(--line);
+}
+thead th {
+  background: var(--hero-bg);
+  color: var(--hero-text);
+}
+tbody tr:nth-child(even) { background: var(--surface); }
+
+/* Gallery (feature 3). Without JavaScript all photos show; with it, one at a time. */
+.gallery { max-width: 44rem; }
+.gallery__item { margin: 0 0 1.5rem; }
+.js .gallery__item { display: none; margin: 0; }
+.js .gallery__item.is-active { display: block; }
+.gallery__item img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.gallery__item figcaption {
+  padding: 0.75rem 0.1rem 0;
+  color: var(--muted);
+  font-style: italic;
+}
+.gallery__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.gallery__status { margin: 0; font-weight: 500; text-align: center; }
+
+/* Media */
+.media-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+}
+.media-item video {
+  width: 100%;
+  border-radius: var(--radius);
+  background: #000;
+}
+.media-item p { margin-top: 0.75rem; color: var(--muted); }
+
+/* ---------- 5. Navigation (mobile first) ---------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  background: var(--nav-bg);
+  color: var(--nav-text);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.brand {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: #FFFFFF;
+  font-family: var(--font-head);
+  font-size: 1.35rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.nav-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 44px;
+  padding: 0.4rem 1rem;
+  border: 2px solid rgba(239, 234, 227, 0.6);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--nav-text);
+  font: inherit;
+  font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.2s ease;
 }
-button[type="submit"]:hover,
-button[type="submit"]:focus {
-  background-color: var(--line);
+.nav-toggle:hover { background: rgba(239, 234, 227, 0.12); }
+.nav-toggle:focus-visible { outline-color: var(--nav-focus); }
+.nav-toggle__bars {
+  position: relative;
+  width: 18px;
+  height: 2px;
+  background: currentColor;
+  box-shadow: 0 6px 0 currentColor, 0 -6px 0 currentColor;
+}
+/* Open state: the three bars collapse to one, and the label says "Close" */
+.nav-toggle[aria-expanded="true"] .nav-toggle__bars { box-shadow: none; }
+
+/* On narrow screens the menu is a panel under the header, hidden until opened */
+.site-nav {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+  padding: 0.5rem 1rem 1rem;
+  background: var(--nav-bg);
+}
+.site-nav.is-open { display: block; }
+.site-nav ul { list-style: none; margin: 0; padding: 0; }
+
+.site-nav a,
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  min-height: 48px;
+  padding: 0.5rem 0.75rem;
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--nav-text);
+  font: inherit;
+  font-weight: 500;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+.site-nav a:hover,
+.theme-toggle:hover { background: rgba(239, 234, 227, 0.14); }
+.site-nav a:focus-visible,
+.theme-toggle:focus-visible {
+  outline: 3px solid var(--nav-focus);
+  outline-offset: -3px;
+}
+.theme-toggle {
+  margin-top: 0.5rem;
+  border-top: 1px solid rgba(239, 234, 227, 0.25);
+  border-radius: 0 0 var(--radius) var(--radius);
 }
 
-footer {
-  text-align: center;
-  padding: 1.5rem;
-  border-top: 2px solid var(--ink);
-  font-size: 0.85rem;
-  color: var(--line);
+.icon {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-/* ===== MOBILE: sidebar becomes a top bar, no horizontal scroll ===== */
-@media (max-width: 720px) {
-  nav {
+/* ---------- 6. Contact form (id selector for the form) ---------- */
+#contact-form {
+  max-width: 36rem;
+  padding: clamp(1rem, 4vw, 2rem);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.demo-note {
+  margin-bottom: 1.25rem;
+  padding: 0.6rem 0.9rem;
+  border-left: 6px solid var(--accent);
+  background: var(--bg);
+  font-weight: 700;
+}
+.field { margin-bottom: 1.1rem; }
+label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-weight: 700;
+}
+input,
+textarea {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 0.65rem 0.85rem;
+  border: 2px solid var(--field-border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+textarea { min-height: 8rem; resize: vertical; }
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  border-color: var(--focus);
+}
+input.is-invalid,
+textarea.is-invalid { border-color: var(--error); }
+
+.field-error {
+  margin: 0.35rem 0 0;
+  color: var(--error);
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+.field-error:empty { display: none; }
+
+.form-status {
+  margin-bottom: 1rem;
+  color: var(--error);
+  font-weight: 700;
+}
+.form-status:empty { display: none; }
+
+.form-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+.preview {
+  max-width: 36rem;
+  margin-top: 1.5rem;
+  padding: 1.25rem 1.4rem;
+  border: 2px dashed var(--accent);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.preview h3 { margin-bottom: 0.4em; }
+.preview dt { margin-top: 0.8rem; font-weight: 700; color: var(--link); }
+.preview dd { margin: 0; white-space: pre-wrap; }
+
+/* ---------- 7. Footer ---------- */
+.site-footer {
+  padding: 2rem max(clamp(1rem, 5vw, 3rem), calc((100% - 62rem) / 2));
+  background: var(--footer-bg);
+  color: var(--hero-text);
+}
+.site-footer p { margin: 0 0 0.4rem; }
+.site-footer a { color: var(--footer-link); }
+
+/* ---------- 8. Wide screens: the icon rail ----------
+   From 900px up, the header becomes a slim fixed rail of icons.
+   Hovering it (or tabbing into it) widens it to show the labels.
+   It overlays the page, so the content never jumps. */
+@media (min-width: 900px) {
+  html { scroll-padding-top: 1rem; }
+  body { padding-left: var(--rail); }
+
+  .site-header {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: var(--rail);
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 1rem 0;
+    overflow: hidden;
+    transition: width 0.25s ease;
+  }
+  .site-header:hover { width: var(--rail-open); }
+  /* Kept as separate rules: older browsers without :has() skip only this one */
+  .site-header:has(:focus-visible) { width: var(--rail-open); }
+
+  .brand { margin: 0 0 1.5rem 16px; }
+  .nav-toggle { display: none; }
+
+  .site-nav {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
     position: static;
     width: 100%;
-    height: auto;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    border-right: none;
-    border-bottom: 3px solid var(--accent);
+    max-height: none;
+    overflow: visible;
+    padding: 0 12px;
+    background: none;
   }
-  .nav-brand { width: 100%; margin-bottom: 0.5rem; }
-  nav a { border-left: none; border-bottom: 3px solid transparent; padding: 0.4rem 0.6rem; }
-  nav a:hover, nav a:focus { border-left: none; border-bottom-color: var(--accent); padding-left: 0.6rem; }
-  .page-content { margin-left: 0; padding: 1.5rem 1rem 3rem; }
-}
-@media (max-width: 480px) {
-  .gallery figure { flex: 1 1 100%; }
+  .site-nav ul { flex: 1; }
+
+  .label {
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  .site-header:hover .label { opacity: 1; }
+  .site-header:has(:focus-visible) .label { opacity: 1; }
 }
