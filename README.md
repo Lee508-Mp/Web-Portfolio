@@ -2,7 +2,7 @@
 
 An interactive, responsive personal portfolio for ICT251 Web Technologies at Mulungushi University. It builds on my Activity 2 website and adds JavaScript features, then deploys as a static site through GitHub to Render.
 
-**Live site:** https://YOUR-SITE-NAME.onrender.com *(replace with your Render URL)*
+**Live site:** https://lees-webportfolio.onrender.com *(replace with your Render URL)*
 
 ## What is on the site
 
@@ -40,4 +40,4 @@ Static Site on Render: Branch `main`, Root Directory blank, Build Command `echo 
 - Fonts: Fraunces and DM Sans from Google Fonts.
 - Icons: simple inline SVG shapes written for this project.
 - Course material: ICT251 lecture slides and the Activity 3 brief.
-
+- In this project I used some assistance from different sources for better understanding, but all the information in this website is there with legal permission
